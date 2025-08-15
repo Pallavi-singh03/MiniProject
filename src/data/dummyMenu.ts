@@ -47,7 +47,7 @@ export const dummyMenu: MenuItem[] = [
         id: "7",
         name: "Masala Dosa",
         description: " ",
-        image: "/Images/Food/Dosa.jpeg",
+        image: "/Images/Food/dosa.jpeg",
         price: 45
   },
   {
@@ -68,7 +68,7 @@ export const dummyMenu: MenuItem[] = [
         id: "10",
         name: "Patties",
         description: " ",
-        image: "/Images/Food/Patis1.jpeg",
+        image: "/Images/Food/patis1.jpeg",
         price: 20
   },
   {
