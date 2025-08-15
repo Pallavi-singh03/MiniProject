@@ -10,7 +10,7 @@ export default function Hero() {
     { src: "/Images/Food/samosa3.jpeg", x: "-550px", y: "-30px", size: 220 },
     { src: "/Images/Food/misal1.jpeg", x: "340px", y: "-130px", size: 220 },
     { src: "/Images/Food/Sandwich.jpg", x: "450px", y: "30px", size: 170 },
-    { src: "/Images/Food/coffee.jpg", x: "-380px", y: "60px", size: 200 },
+    { src: "/Images/Food/Coffee.jpg", x: "-380px", y: "60px", size: 200 },
   ];
 
   // Animation variants for sequential pop-in + float
