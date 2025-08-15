@@ -1,14 +1,38 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { getFirestore, collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import app from '@/firebase/firebaseConfig';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  Timestamp,
+} from "firebase/firestore";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import app from "@/firebase/firebaseConfig";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function OrdersPage() {
-  const [orders, setOrders] = useState<any[]>([]);
+// Define types for orders
+type OrderItem = {
+  name: string;
+  quantity: number;
+  price: number;
+};
+
+type Order = {
+  id: string;
+  userId: string;
+  items: OrderItem[];
+  total: number;
+  status: string;
+  createdAt: Timestamp | null; // Firestore timestamp
+};
+
+export default function OrderDetailsPage() {
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -16,20 +40,25 @@ export default function OrdersPage() {
     const auth = getAuth(app);
     let unsubOrders: (() => void) | null = null;
 
-    const unsubAuth = onAuthStateChanged(auth, (user) => {
+    const unsubAuth = onAuthStateChanged(auth, (user: User | null) => {
       if (!user) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
+
       const db = getFirestore(app);
       const q = query(
-        collection(db, 'orders'),
-        where('userId', '==', user.uid),
-        orderBy('createdAt', 'desc')
+        collection(db, "orders"),
+        where("userId", "==", user.uid),
+        orderBy("createdAt", "desc")
       );
 
       unsubOrders = onSnapshot(q, (snap) => {
-        setOrders(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+        const ordersData: Order[] = snap.docs.map((d) => ({
+          id: d.id,
+          ...(d.data() as Omit<Order, "id">),
+        }));
+        setOrders(ordersData);
         setLoading(false);
       });
     });
@@ -61,10 +90,11 @@ export default function OrdersPage() {
                   <div className="text-sm text-gray-600">
                     {o.createdAt?.toDate
                       ? o.createdAt.toDate().toLocaleString()
-                      : 'N/A'}
+                      : "N/A"}
                   </div>
                   <div className="mt-2 text-sm">
-                    {o.items?.length ?? 0} item{o.items?.length === 1 ? '' : 's'} — ₹{o.total}
+                    {o.items?.length ?? 0} item{o.items?.length === 1 ? "" : "s"} — ₹
+                    {o.total}
                   </div>
                 </div>
                 <div className="text-right font-medium">{o.status}</div>

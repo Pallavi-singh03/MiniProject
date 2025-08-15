@@ -7,7 +7,6 @@ interface CartItem extends MenuItem {
 }
 
 interface CartState {
-  [x: string]: any;
   items: CartItem[];
   addToCart: (item: MenuItem) => void;
   removeFromCart: (id: string) => void;
@@ -41,7 +40,7 @@ export const useCartStore = create<CartState>()(
   )
 );
 
-export const hasHydrated = () =>{
+// Optional: helper to check hydration
+export const hasHydrated = () => {
   return useCartStore.persist?.hasHydrated?.();
 };
-

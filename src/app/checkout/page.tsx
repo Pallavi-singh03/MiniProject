@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useCartStore } from "@/store/useCartStore";
 import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import app from "@/firebase/firebaseConfig";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -15,7 +15,7 @@ export default function CheckoutPage() {
   const clearCart = useCartStore((s) => s.clearCart);
   const total = items.reduce((sum, it) => sum + it.price * it.quantity, 0);
 
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [deliveryType, setDeliveryType] = useState<"pickup" | "delivery">("pickup");
   const [address, setAddress] = useState("");
   const router = useRouter();
@@ -63,9 +63,13 @@ export default function CheckoutPage() {
       clearCart();
       toast.success("Order placed successfully!");
       router.push(`/orders/${docRef.id}`);
-    } catch (err: any) {
-      console.error(`Order error:`, err);
-      toast.error("Something went wrong while placing order");
+    } catch (err: unknown) {
+      console.error("Order error:", err);
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("Something went wrong while placing order");
+      }
     }
   };
 
@@ -110,9 +114,7 @@ export default function CheckoutPage() {
                       ₹{it.price} × {it.quantity}
                     </div>
                   </div>
-                  <div className="font-medium">
-                    ₹{it.price * it.quantity}
-                  </div>
+                  <div className="font-medium">₹{it.price * it.quantity}</div>
                 </div>
               ))}
             </div>

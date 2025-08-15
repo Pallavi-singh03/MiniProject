@@ -1,40 +1,45 @@
 "use client";
 
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import  app  from "@/firebase/firebaseConfig";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  AuthError,
+} from "firebase/auth";
+import app from "@/firebase/firebaseConfig";
 
 export default function Login() {
   const router = useRouter();
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const error = err as AuthError;
+      setError(error.message);
     }
   };
 
   const handleGoogleLogin = async () => {
-    try{
-        await signInWithPopup(auth, provider);
-        router.push("/dashboard");
-
-    } catch(err: any){
-        setError(err.message);
+    try {
+      await signInWithPopup(auth, provider);
+      router.push("/dashboard");
+    } catch (err) {
+      const error = err as AuthError;
+      setError(error.message);
     }
   };
-
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -68,21 +73,21 @@ export default function Login() {
           type="submit"
           className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
         >
-          Login 
+          Login
         </button>
 
-        <button 
-            type = "submit"
-            onClick = {handleGoogleLogin}
-            className="w-full mt-4 border border-gray-400 p-2 rounded hover:bg-gray-100">
-                Continue with Google
-            </button>
-
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className="w-full mt-4 border border-gray-400 p-2 rounded hover:bg-gray-100"
+        >
+          Continue with Google
+        </button>
 
         <p className="text-sm text-center mt-4">
           Don&apos;t have an account?{" "}
           <a href="/register" className="text-blue-500 underline">
-           Sign Up
+            Sign Up
           </a>
         </p>
       </form>
