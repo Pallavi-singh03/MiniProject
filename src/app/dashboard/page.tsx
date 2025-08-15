@@ -34,7 +34,7 @@ export default function Dashboard() {
         Welcome to Dashboard
       </h1>
       <p className="text-lg text-gray-600 mb-8">
-        You're now logged in 🎉
+        You&apos; now logged in 🎉
       </p>
       <button
         onClick={handleLogout}

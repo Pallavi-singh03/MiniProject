@@ -62,8 +62,7 @@ export default function Register() {
         </button>
 
         <p className="text-sm text-center mt-4">
-          Already have an account?{" "}
-          <a href="/login" className="text-blue-500 underline">
+          Already have an account?{" "}<a href="/login" className="text-blue-500 underline">
             Login
           </a>
         </p>
